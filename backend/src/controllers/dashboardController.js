@@ -52,16 +52,16 @@ exports.getStatistics = async (req, res) => {
 
     const recentApprovals = await PendingChange.findAll({
       where: {
-        createdAt: {
+        created_at: {
           [Op.gte]: sevenDaysAgo
         }
       },
       attributes: [
-        [PendingChange.sequelize.fn('DATE', PendingChange.sequelize.col('createdAt')), 'date'],
+        [PendingChange.sequelize.fn('DATE', PendingChange.sequelize.col('created_at')), 'date'],
         [PendingChange.sequelize.fn('COUNT', PendingChange.sequelize.col('id')), 'count']
       ],
-      group: [PendingChange.sequelize.fn('DATE', PendingChange.sequelize.col('createdAt'))],
-      order: [[PendingChange.sequelize.fn('DATE', PendingChange.sequelize.col('createdAt')), 'ASC']]
+      group: [PendingChange.sequelize.fn('DATE', PendingChange.sequelize.col('created_at'))],
+      order: [[PendingChange.sequelize.fn('DATE', PendingChange.sequelize.col('created_at')), 'ASC']]
     });
 
     // Fill in missing dates with 0 count
