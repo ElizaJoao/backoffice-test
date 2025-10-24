@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { UserListComponent } from './features/users/user-list/user-list.component';
 import { UserDetailComponent } from './features/users/user-detail/user-detail.component';
 import { CompanyListComponent } from './features/companies/company-list/company-list.component';
@@ -16,7 +17,8 @@ export const routes: Routes = [
   { path: 'forgot-password', component: ForgotPasswordComponent },
 
   // Protected routes
-  { path: '', redirectTo: '/users', pathMatch: 'full' },
+  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
   { path: 'users', component: UserListComponent, canActivate: [authGuard] },
   { path: 'users/:id', component: UserDetailComponent, canActivate: [authGuard] },
   { path: 'companies', component: CompanyListComponent, canActivate: [authGuard] },
