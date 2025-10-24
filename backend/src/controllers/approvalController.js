@@ -1,4 +1,4 @@
-const { PendingChange, User, Company } = require('../models');
+const { PendingChange, User, Company, Country, Employee } = require('../models');
 
 exports.getPendingChanges = async (req, res) => {
   try {
@@ -46,6 +46,26 @@ exports.approveChange = async (req, res) => {
         await Company.destroy({ where: { id: entityId } });
         result = { message: 'Company deleted' };
       }
+    } else if (entityType === 'country') {
+      if (action === 'create' || action === 'update') {
+        // Update country approval status to approved
+        await Country.update({ approvalStatus: 'approved' }, { where: { id: entityId } });
+        result = await Country.findByPk(entityId);
+      } else if (action === 'delete') {
+        // Delete the country
+        await Country.destroy({ where: { id: entityId } });
+        result = { message: 'Country deleted' };
+      }
+    } else if (entityType === 'employee') {
+      if (action === 'create' || action === 'update') {
+        // Update employee approval status to approved
+        await Employee.update({ approvalStatus: 'approved' }, { where: { id: entityId } });
+        result = await Employee.findByPk(entityId);
+      } else if (action === 'delete') {
+        // Delete the employee
+        await Employee.destroy({ where: { id: entityId } });
+        result = { message: 'Employee deleted' };
+      }
     }
 
     // Update pending change status
@@ -83,6 +103,10 @@ exports.rejectChange = async (req, res) => {
       await User.update({ approvalStatus: 'rejected' }, { where: { id: entityId } });
     } else if (entityType === 'company') {
       await Company.update({ approvalStatus: 'rejected' }, { where: { id: entityId } });
+    } else if (entityType === 'country') {
+      await Country.update({ approvalStatus: 'rejected' }, { where: { id: entityId } });
+    } else if (entityType === 'employee') {
+      await Employee.update({ approvalStatus: 'rejected' }, { where: { id: entityId } });
     }
 
     // Update pending change status

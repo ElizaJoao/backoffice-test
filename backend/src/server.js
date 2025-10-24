@@ -8,6 +8,7 @@ const authRoutes = require('./routes/auth');
 const usersRoutes = require('./routes/users');
 const companiesRoutes = require('./routes/companies');
 const countriesRoutes = require('./routes/countries');
+const employeesRoutes = require('./routes/employees');
 const approvalsRoutes = require('./routes/approvals');
 const dashboardRoutes = require('./routes/dashboard');
 
@@ -28,6 +29,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/companies', companiesRoutes);
 app.use('/api/countries', countriesRoutes);
+app.use('/api/employees', employeesRoutes);
 app.use('/api/approvals', approvalsRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 

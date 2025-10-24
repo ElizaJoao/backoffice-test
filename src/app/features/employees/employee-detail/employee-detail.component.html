@@ -1,0 +1,153 @@
+<mat-sidenav-container class="detail-container">
+  <mat-sidenav-content>
+    <mat-card class="detail-card">
+      <mat-card-header>
+        <mat-card-title>
+          {{ isNewEmployee ? 'New Employee' : 'Employee Details' }}
+        </mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <!-- Action Buttons Row -->
+        <div class="action-buttons">
+          <div class="left-buttons">
+            <button mat-raised-button color="warn" (click)="delete()" *ngIf="!isNewEmployee && canDelete">
+              <mat-icon>delete</mat-icon>
+              Delete
+            </button>
+            <button mat-raised-button (click)="toggleHistory()" *ngIf="!isNewEmployee">
+              <mat-icon>history</mat-icon>
+              See History
+            </button>
+          </div>
+
+          <div class="right-buttons">
+            <button mat-raised-button (click)="discard()" [disabled]="!isDirty && !isNewEmployee">
+              <mat-icon>close</mat-icon>
+              Discard
+            </button>
+            <button mat-raised-button color="primary" (click)="save()" [disabled]="!employeeForm.valid || (!isDirty && !isNewEmployee)">
+              <mat-icon>save</mat-icon>
+              Save
+            </button>
+          </div>
+        </div>
+
+        <mat-divider class="divider"></mat-divider>
+
+        <!-- Form -->
+        <form [formGroup]="employeeForm" class="detail-form">
+          <div class="form-row">
+            <mat-form-field class="form-field" appearance="outline">
+              <mat-label>Employee ID</mat-label>
+              <input matInput formControlName="employeeId" placeholder="Enter employee ID">
+              <mat-error *ngIf="employeeForm.get('employeeId')?.hasError('required')">
+                Employee ID is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="form-field" appearance="outline">
+              <mat-label>Full Name</mat-label>
+              <input matInput formControlName="name" placeholder="Enter full name">
+              <mat-error *ngIf="employeeForm.get('name')?.hasError('required')">
+                Name is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field class="form-field" appearance="outline">
+              <mat-label>Email</mat-label>
+              <input matInput type="email" formControlName="email" placeholder="Enter email">
+              <mat-error *ngIf="employeeForm.get('email')?.hasError('required')">
+                Email is required
+              </mat-error>
+              <mat-error *ngIf="employeeForm.get('email')?.hasError('email')">
+                Invalid email format
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="form-field" appearance="outline">
+              <mat-label>Phone</mat-label>
+              <input matInput formControlName="phone" placeholder="Enter phone number">
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field class="form-field" appearance="outline">
+              <mat-label>Department</mat-label>
+              <input matInput formControlName="department" placeholder="Enter department">
+              <mat-error *ngIf="employeeForm.get('department')?.hasError('required')">
+                Department is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="form-field" appearance="outline">
+              <mat-label>Position</mat-label>
+              <input matInput formControlName="position" placeholder="Enter position">
+              <mat-error *ngIf="employeeForm.get('position')?.hasError('required')">
+                Position is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field class="form-field" appearance="outline">
+              <mat-label>Hire Date</mat-label>
+              <input matInput [matDatepicker]="picker" formControlName="hireDate" placeholder="Select hire date">
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+              <mat-error *ngIf="employeeForm.get('hireDate')?.hasError('required')">
+                Hire date is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="form-field" appearance="outline">
+              <mat-label>Company</mat-label>
+              <mat-select formControlName="companyId">
+                <mat-option *ngFor="let company of companies" [value]="company.id">
+                  {{ company.name }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="employeeForm.get('companyId')?.hasError('required')">
+                Company is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field class="form-field" appearance="outline">
+              <mat-label>Status</mat-label>
+              <mat-select formControlName="status">
+                <mat-option value="active">Active</mat-option>
+                <mat-option value="inactive">Inactive</mat-option>
+              </mat-select>
+              <mat-error *ngIf="employeeForm.get('status')?.hasError('required')">
+                Status is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Edit Mode Toggle (only for existing employees with edit permission and not pending approval) -->
+          <div class="toggle-edit" *ngIf="!isNewEmployee && canToggleEditMode">
+            <button mat-raised-button type="button" color="accent" (click)="toggleEditMode()">
+              <mat-icon>{{ isEditMode ? 'visibility' : 'edit' }}</mat-icon>
+              {{ isEditMode ? 'View Mode' : 'Edit Mode' }}
+            </button>
+          </div>
+
+          <!-- Message when entity is pending approval -->
+          <div class="pending-message" *ngIf="!isNewEmployee && employee?.approvalStatus === 'pending'">
+            <mat-icon>info</mat-icon>
+            <span>This employee is pending approval. Edit mode is disabled.</span>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </mat-sidenav-content>
+
+  <!-- History Drawer -->
+  <mat-sidenav #historyDrawer position="end" mode="side" [(opened)]="historyDrawerOpened" class="history-sidenav">
+    <app-history-drawer [history]="history"></app-history-drawer>
+  </mat-sidenav>
+</mat-sidenav-container>
