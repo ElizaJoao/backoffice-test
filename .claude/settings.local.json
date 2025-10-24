@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(mkdir:*)",
+      "Bash(ng generate:*)",
+      "Bash(if not exist srcenvironments mkdir srcenvironments)",
+      "Bash(if not exist auth mkdir auth)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -1,0 +1,78 @@
+.approvals-container {
+  padding: 20px;
+}
+
+.header-content {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.title-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  .title-icon {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 500;
+  }
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+}
+
+.entity-type {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.preview-text {
+  font-style: italic;
+  color: #666;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 4px;
+}
+
+mat-chip {
+  font-weight: 500;
+}
+
+.status-approved {
+  background-color: #4caf50 !important;
+  color: white !important;
+}
+
+.status-pending {
+  background-color: #ff9800 !important;
+  color: white !important;
+}
+
+.status-rejected {
+  background-color: #f44336 !important;
+  color: white !important;
+}

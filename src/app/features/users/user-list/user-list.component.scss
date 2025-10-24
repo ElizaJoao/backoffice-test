@@ -1,0 +1,92 @@
+.table-container {
+  margin: 16px;
+  padding: 24px;
+}
+
+.filter-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+  align-items: center;
+
+  .filter-field {
+    flex: 1 1 200px;
+    min-width: 150px;
+  }
+
+  .clear-filters-link {
+    display: inline-flex;
+    align-items: center;
+    height: 56px;
+    margin-top: 8px;
+    color: #ccc;
+    text-decoration: none;
+    text-transform: none;
+    font-weight: normal;
+    background: transparent;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    padding: 0 16px;
+
+    &.has-filters {
+      color: #f44336;
+    }
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  .add-btn {
+    height: 56px;
+    margin-top: 8px;
+  }
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  margin-bottom: 16px;
+}
+
+table {
+  width: 100%;
+
+  .table-row {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.04);
+    }
+  }
+
+  .actions-cell {
+    width: 80px;
+    text-align: center;
+  }
+}
+
+.status-active {
+  background-color: #4caf50 !important;
+  color: white;
+}
+
+.status-inactive {
+  background-color: #f44336 !important;
+  color: white;
+}
+
+mat-chip {
+  font-size: 12px;
+  min-height: 24px;
+  padding: 4px 12px;
+}
+
+@media (max-width: 768px) {
+  .filter-section {
+    .filter-field {
+      flex: 1 1 100%;
+    }
+  }
+}

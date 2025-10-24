@@ -1,0 +1,117 @@
+<h2 mat-dialog-title>
+  <div class="dialog-title">
+    <mat-icon>{{ data.change.entityType === 'user' ? 'person' : 'business' }}</mat-icon>
+    <span>{{ data.change.entityType | titlecase }} {{ data.change.action | titlecase }}</span>
+    <mat-chip [color]="data.change.action === 'create' ? 'primary' : (data.change.action === 'update' ? 'accent' : 'warn')" highlighted>
+      {{ data.change.action | titlecase }}
+    </mat-chip>
+  </div>
+</h2>
+
+<mat-dialog-content>
+  <div class="details-section">
+    <div class="info-row">
+      <strong>Requested By:</strong>
+      <span>{{ data.change.requestedBy }}</span>
+    </div>
+    <div class="info-row">
+      <strong>Requested At:</strong>
+      <span>{{ data.change.createdAt | date:'medium' }}</span>
+    </div>
+    <div class="info-row">
+      <strong>Status:</strong>
+      <mat-chip [color]="data.change.status === 'pending' ? 'accent' : (data.change.status === 'approved' ? 'primary' : 'warn')" highlighted>
+        {{ data.change.status | titlecase }}
+      </mat-chip>
+    </div>
+  </div>
+
+  <div class="changes-section">
+    <h3>Changes</h3>
+    <table class="changes-table">
+      <thead>
+        <tr>
+          <th>Field</th>
+          @if (data.change.action === 'update') {
+            <th>Old Value</th>
+          }
+          @if (data.change.action !== 'delete') {
+            <th>New Value</th>
+          }
+          @if (data.change.action === 'delete') {
+            <th>Current Value</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (key of getFieldKeys(); track key) {
+          <tr [class.changed]="hasChanges(key)">
+            <td class="field-name">{{ key }}</td>
+            @if (data.change.action === 'update') {
+              <td class="old-value">{{ formatValue(getOldValue(key)) }}</td>
+              <td class="new-value">{{ formatValue(getNewValue(key)) }}</td>
+            }
+            @if (data.change.action === 'create') {
+              <td class="new-value">{{ formatValue(getNewValue(key)) }}</td>
+            }
+            @if (data.change.action === 'delete') {
+              <td class="old-value">{{ formatValue(getOldValue(key)) }}</td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  @if (data.change.status === 'rejected' && data.change.rejectionReason) {
+    <div class="rejection-section">
+      <h3>Rejection Reason</h3>
+      <p>{{ data.change.rejectionReason }}</p>
+      <div class="info-row">
+        <strong>Rejected By:</strong>
+        <span>{{ data.change.reviewedBy }}</span>
+      </div>
+      <div class="info-row">
+        <strong>Rejected At:</strong>
+        <span>{{ data.change.reviewedAt | date:'medium' }}</span>
+      </div>
+    </div>
+  }
+
+  @if (data.change.status === 'approved') {
+    <div class="approval-section">
+      <div class="info-row">
+        <strong>Approved By:</strong>
+        <span>{{ data.change.reviewedBy }}</span>
+      </div>
+      <div class="info-row">
+        <strong>Approved At:</strong>
+        <span>{{ data.change.reviewedAt | date:'medium' }}</span>
+      </div>
+    </div>
+  }
+
+  @if (data.change.status === 'pending') {
+    <div class="rejection-input">
+      <mat-form-field appearance="outline">
+        <mat-label>Rejection Reason (required for rejection)</mat-label>
+        <textarea matInput [(ngModel)]="rejectionReason" rows="3" placeholder="Enter reason for rejection..."></textarea>
+        <mat-hint>Please provide a reason if you plan to reject this change</mat-hint>
+      </mat-form-field>
+    </div>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Close</button>
+  @if (data.change.status === 'pending') {
+    <button mat-raised-button color="warn" (click)="reject()">
+      <mat-icon>cancel</mat-icon>
+      Reject
+    </button>
+    <button mat-raised-button color="primary" (click)="approve()">
+      <mat-icon>check_circle</mat-icon>
+      Approve
+    </button>
+  }
+</mat-dialog-actions>
