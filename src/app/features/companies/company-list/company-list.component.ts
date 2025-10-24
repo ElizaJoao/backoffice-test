@@ -45,6 +45,8 @@ export class CompanyListComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
+  showFilters = false;
+
   filterValues = {
     name: '',
     industry: '',
@@ -106,6 +108,14 @@ export class CompanyListComponent implements OnInit {
 
   hasActiveFilters(): boolean {
     return Object.values(this.filterValues).some(value => value !== '');
+  }
+
+  getActiveFilterCount(): number {
+    return Object.values(this.filterValues).filter(value => value !== '').length;
+  }
+
+  toggleFilters(): void {
+    this.showFilters = !this.showFilters;
   }
 
   addCompany(): void {
