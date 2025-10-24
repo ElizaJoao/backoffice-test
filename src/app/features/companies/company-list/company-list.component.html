@@ -4,46 +4,73 @@
   </mat-card-header>
 
   <mat-card-content>
-    <!-- Filter Section -->
-    <div class="filter-section">
-      <mat-form-field class="filter-field">
-        <mat-label>Name</mat-label>
-        <input matInput [(ngModel)]="filterValues.name" (keyup)="applyFilter('name', filterValues.name)" placeholder="Filter by name">
-      </mat-form-field>
+    <!-- Header with Actions -->
+    <div class="list-header">
+      <div class="search-container">
+        <mat-form-field class="search-field" appearance="outline">
+          <mat-label>Search companies...</mat-label>
+          <input matInput [(ngModel)]="filterValues.name" (keyup)="applyFilter('name', filterValues.name)" placeholder="Search by name">
+          <mat-icon matPrefix>search</mat-icon>
+        </mat-form-field>
+      </div>
 
-      <mat-form-field class="filter-field">
-        <mat-label>Industry</mat-label>
-        <input matInput [(ngModel)]="filterValues.industry" (keyup)="applyFilter('industry', filterValues.industry)" placeholder="Filter by industry">
-      </mat-form-field>
+      <div class="actions-container">
+        <button mat-stroked-button (click)="toggleFilters()" class="filter-toggle-btn">
+          <mat-icon>filter_list</mat-icon>
+          Filters
+          @if (hasActiveFilters()) {
+            <span class="filter-count">{{ getActiveFilterCount() }}</span>
+          }
+        </button>
 
-      <mat-form-field class="filter-field">
-        <mat-label>Email</mat-label>
-        <input matInput [(ngModel)]="filterValues.email" (keyup)="applyFilter('email', filterValues.email)" placeholder="Filter by email">
-      </mat-form-field>
-
-      <mat-form-field class="filter-field">
-        <mat-label>Phone</mat-label>
-        <input matInput [(ngModel)]="filterValues.phone" (keyup)="applyFilter('phone', filterValues.phone)" placeholder="Filter by phone">
-      </mat-form-field>
-
-      <mat-form-field class="filter-field">
-        <mat-label>Status</mat-label>
-        <mat-select [(ngModel)]="filterValues.status" (selectionChange)="applyFilter('status', filterValues.status)">
-          <mat-option value="">All</mat-option>
-          <mat-option value="active">Active</mat-option>
-          <mat-option value="inactive">Inactive</mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <a (click)="clearFilters()" [class.has-filters]="hasActiveFilters()" class="clear-filters-link">
-        Clear Filters
-      </a>
-
-      <button mat-raised-button color="primary" (click)="addCompany()" class="add-btn">
-        <mat-icon>add</mat-icon>
-        Add Company
-      </button>
+        <button mat-raised-button color="primary" (click)="addCompany()">
+          <mat-icon>add</mat-icon>
+          Add Company
+        </button>
+      </div>
     </div>
+
+    <!-- Expandable Filter Section -->
+    @if (showFilters) {
+      <div class="advanced-filters">
+        <div class="filters-grid">
+          <mat-form-field appearance="outline" class="compact-field">
+            <mat-label>Industry</mat-label>
+            <input matInput [(ngModel)]="filterValues.industry" (keyup)="applyFilter('industry', filterValues.industry)">
+            <mat-icon matPrefix>factory</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="compact-field">
+            <mat-label>Email</mat-label>
+            <input matInput [(ngModel)]="filterValues.email" (keyup)="applyFilter('email', filterValues.email)">
+            <mat-icon matPrefix>email</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="compact-field">
+            <mat-label>Phone</mat-label>
+            <input matInput [(ngModel)]="filterValues.phone" (keyup)="applyFilter('phone', filterValues.phone)">
+            <mat-icon matPrefix>phone</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="compact-field">
+            <mat-label>Status</mat-label>
+            <mat-select [(ngModel)]="filterValues.status" (selectionChange)="applyFilter('status', filterValues.status)">
+              <mat-option value="">All</mat-option>
+              <mat-option value="active">Active</mat-option>
+              <mat-option value="inactive">Inactive</mat-option>
+            </mat-select>
+            <mat-icon matPrefix>toggle_on</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div class="filter-actions">
+          <button mat-button (click)="clearFilters()" [disabled]="!hasActiveFilters()">
+            <mat-icon>clear</mat-icon>
+            Clear All
+          </button>
+        </div>
+      </div>
+    }
 
     <!-- Table Section -->
     <div class="table-wrapper">
