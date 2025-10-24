@@ -1,0 +1,130 @@
+<mat-sidenav-container class="detail-container">
+  <mat-sidenav-content>
+    <mat-card class="detail-card">
+      <mat-card-header>
+        <mat-card-title>
+          {{ isNewUser ? 'New User' : 'User Details' }}
+        </mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <!-- Action Buttons Row -->
+        <div class="action-buttons">
+          <div class="left-buttons">
+            <button mat-raised-button color="warn" (click)="delete()" *ngIf="!isNewUser && canDelete">
+              <mat-icon>delete</mat-icon>
+              Delete
+            </button>
+            <button mat-raised-button color="accent" (click)="resetPassword()" *ngIf="!isNewUser && canDelete">
+              <mat-icon>lock_reset</mat-icon>
+              Reset Password
+            </button>
+            <button mat-raised-button (click)="toggleHistory()" *ngIf="!isNewUser">
+              <mat-icon>history</mat-icon>
+              See History
+            </button>
+          </div>
+
+          <div class="right-buttons">
+            <button mat-raised-button (click)="discard()" [disabled]="!isDirty && !isNewUser">
+              <mat-icon>close</mat-icon>
+              Discard
+            </button>
+            <button mat-raised-button color="primary" (click)="save()" [disabled]="!userForm.valid || (!isDirty && !isNewUser)">
+              <mat-icon>save</mat-icon>
+              Save
+            </button>
+          </div>
+        </div>
+
+        <mat-divider class="divider"></mat-divider>
+
+        <!-- Form -->
+        <form [formGroup]="userForm" class="detail-form">
+          <div class="form-row">
+            <mat-form-field class="form-field" appearance="outline">
+              <mat-label>Name</mat-label>
+              <input matInput formControlName="name" placeholder="Enter name">
+              <mat-error *ngIf="userForm.get('name')?.hasError('required')">
+                Name is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="form-field" appearance="outline">
+              <mat-label>Email</mat-label>
+              <input matInput type="email" formControlName="email" placeholder="Enter email">
+              <mat-error *ngIf="userForm.get('email')?.hasError('required')">
+                Email is required
+              </mat-error>
+              <mat-error *ngIf="userForm.get('email')?.hasError('email')">
+                Invalid email format
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field class="form-field" appearance="outline">
+              <mat-label>Role</mat-label>
+              <mat-select formControlName="role">
+                <mat-option value="Admin">Admin</mat-option>
+                <mat-option value="Manager">Manager</mat-option>
+                <mat-option value="Developer">Developer</mat-option>
+                <mat-option value="Designer">Designer</mat-option>
+                <mat-option value="Analyst">Analyst</mat-option>
+              </mat-select>
+              <mat-error *ngIf="userForm.get('role')?.hasError('required')">
+                Role is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="form-field" appearance="outline">
+              <mat-label>Department</mat-label>
+              <mat-select formControlName="department">
+                <mat-option value="IT">IT</mat-option>
+                <mat-option value="Sales">Sales</mat-option>
+                <mat-option value="Marketing">Marketing</mat-option>
+                <mat-option value="Finance">Finance</mat-option>
+                <mat-option value="HR">HR</mat-option>
+              </mat-select>
+              <mat-error *ngIf="userForm.get('department')?.hasError('required')">
+                Department is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field class="form-field" appearance="outline">
+              <mat-label>Status</mat-label>
+              <mat-select formControlName="status">
+                <mat-option value="active">Active</mat-option>
+                <mat-option value="inactive">Inactive</mat-option>
+              </mat-select>
+              <mat-error *ngIf="userForm.get('status')?.hasError('required')">
+                Status is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Edit Mode Toggle (only for existing users with edit permission and not pending approval) -->
+          <div class="toggle-edit" *ngIf="!isNewUser && canToggleEditMode">
+            <button mat-raised-button type="button" color="accent" (click)="toggleEditMode()">
+              <mat-icon>{{ isEditMode ? 'visibility' : 'edit' }}</mat-icon>
+              {{ isEditMode ? 'View Mode' : 'Edit Mode' }}
+            </button>
+          </div>
+
+          <!-- Message when entity is pending approval -->
+          <div class="pending-message" *ngIf="!isNewUser && user?.approvalStatus === 'pending'">
+            <mat-icon>info</mat-icon>
+            <span>This user is pending approval. Edit mode is disabled.</span>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </mat-sidenav-content>
+
+  <!-- History Drawer -->
+  <mat-sidenav #historyDrawer position="end" mode="side" [(opened)]="historyDrawerOpened" class="history-sidenav">
+    <app-history-drawer [history]="history"></app-history-drawer>
+  </mat-sidenav>
+</mat-sidenav-container>

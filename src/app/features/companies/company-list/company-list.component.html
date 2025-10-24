@@ -1,0 +1,133 @@
+<mat-card class="table-container">
+  <mat-card-header>
+    <mat-card-title>Companies Management</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <!-- Filter Section -->
+    <div class="filter-section">
+      <mat-form-field class="filter-field">
+        <mat-label>Name</mat-label>
+        <input matInput [(ngModel)]="filterValues.name" (keyup)="applyFilter('name', filterValues.name)" placeholder="Filter by name">
+      </mat-form-field>
+
+      <mat-form-field class="filter-field">
+        <mat-label>Industry</mat-label>
+        <input matInput [(ngModel)]="filterValues.industry" (keyup)="applyFilter('industry', filterValues.industry)" placeholder="Filter by industry">
+      </mat-form-field>
+
+      <mat-form-field class="filter-field">
+        <mat-label>Email</mat-label>
+        <input matInput [(ngModel)]="filterValues.email" (keyup)="applyFilter('email', filterValues.email)" placeholder="Filter by email">
+      </mat-form-field>
+
+      <mat-form-field class="filter-field">
+        <mat-label>Phone</mat-label>
+        <input matInput [(ngModel)]="filterValues.phone" (keyup)="applyFilter('phone', filterValues.phone)" placeholder="Filter by phone">
+      </mat-form-field>
+
+      <mat-form-field class="filter-field">
+        <mat-label>Status</mat-label>
+        <mat-select [(ngModel)]="filterValues.status" (selectionChange)="applyFilter('status', filterValues.status)">
+          <mat-option value="">All</mat-option>
+          <mat-option value="active">Active</mat-option>
+          <mat-option value="inactive">Inactive</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <a (click)="clearFilters()" [class.has-filters]="hasActiveFilters()" class="clear-filters-link">
+        Clear Filters
+      </a>
+
+      <button mat-raised-button color="primary" (click)="addCompany()" class="add-btn">
+        <mat-icon>add</mat-icon>
+        Add Company
+      </button>
+    </div>
+
+    <!-- Table Section -->
+    <div class="table-wrapper">
+      <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z2">
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+          <td mat-cell *matCellDef="let company">{{ company.name }}</td>
+        </ng-container>
+
+        <!-- Industry Column -->
+        <ng-container matColumnDef="industry">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Industry</th>
+          <td mat-cell *matCellDef="let company">{{ company.industry }}</td>
+        </ng-container>
+
+        <!-- Email Column -->
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Email</th>
+          <td mat-cell *matCellDef="let company">{{ company.email }}</td>
+        </ng-container>
+
+        <!-- Phone Column -->
+        <ng-container matColumnDef="phone">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Phone</th>
+          <td mat-cell *matCellDef="let company">{{ company.phone }}</td>
+        </ng-container>
+
+        <!-- Employee Count Column -->
+        <ng-container matColumnDef="employeeCount">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Employees</th>
+          <td mat-cell *matCellDef="let company">{{ company.employeeCount }}</td>
+        </ng-container>
+
+        <!-- Status Column -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+          <td mat-cell *matCellDef="let company">
+            <mat-chip [class]="company.status === 'active' ? 'status-active' : 'status-inactive'">
+              {{ company.status | titlecase }}
+            </mat-chip>
+          </td>
+        </ng-container>
+
+        <!-- Approval Status Column -->
+        <ng-container matColumnDef="approvalStatus">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Approval</th>
+          <td mat-cell *matCellDef="let company">
+            <mat-chip [color]="company.approvalStatus === 'approved' ? 'primary' : (company.approvalStatus === 'pending' ? 'accent' : 'warn')" highlighted>
+              {{ company.approvalStatus | titlecase }}
+            </mat-chip>
+          </td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let company" class="actions-cell">
+            <button mat-icon-button [matMenuTriggerFor]="menu" (click)="$event.stopPropagation()">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="viewCompany(company)">
+                <mat-icon>visibility</mat-icon>
+                <span>View Details</span>
+              </button>
+              <button mat-menu-item (click)="deleteCompany(company, $event)">
+                <mat-icon>delete</mat-icon>
+                <span>Delete</span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="viewCompany(row)" class="table-row"></tr>
+      </table>
+    </div>
+
+    <!-- Paginator -->
+    <mat-paginator
+      [pageSizeOptions]="[5, 10, 25, 50, 100]"
+      [pageSize]="10"
+      showFirstLastButtons>
+    </mat-paginator>
+  </mat-card-content>
+</mat-card>

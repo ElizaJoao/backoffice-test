@@ -1,0 +1,143 @@
+<mat-sidenav-container class="detail-container">
+  <mat-sidenav-content>
+    <mat-card class="detail-card">
+      <mat-card-header>
+        <mat-card-title>
+          {{ isNewCompany ? 'New Company' : 'Company Details' }}
+        </mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <!-- Action Buttons Row -->
+        <div class="action-buttons">
+          <div class="left-buttons">
+            <button mat-raised-button color="warn" (click)="delete()" *ngIf="!isNewCompany && canDelete">
+              <mat-icon>delete</mat-icon>
+              Delete
+            </button>
+            <button mat-raised-button (click)="toggleHistory()" *ngIf="!isNewCompany">
+              <mat-icon>history</mat-icon>
+              See History
+            </button>
+          </div>
+
+          <div class="right-buttons">
+            <button mat-raised-button (click)="discard()" [disabled]="!isDirty && !isNewCompany">
+              <mat-icon>close</mat-icon>
+              Discard
+            </button>
+            <button mat-raised-button color="primary" (click)="save()" [disabled]="!companyForm.valid || (!isDirty && !isNewCompany)">
+              <mat-icon>save</mat-icon>
+              Save
+            </button>
+          </div>
+        </div>
+
+        <mat-divider class="divider"></mat-divider>
+
+        <!-- Form -->
+        <form [formGroup]="companyForm" class="detail-form">
+          <div class="form-row">
+            <mat-form-field class="form-field" appearance="outline">
+              <mat-label>Company Name</mat-label>
+              <input matInput formControlName="name" placeholder="Enter company name">
+              <mat-error *ngIf="companyForm.get('name')?.hasError('required')">
+                Company name is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="form-field" appearance="outline">
+              <mat-label>Industry</mat-label>
+              <mat-select formControlName="industry">
+                <mat-option value="Technology">Technology</mat-option>
+                <mat-option value="Healthcare">Healthcare</mat-option>
+                <mat-option value="Finance">Finance</mat-option>
+                <mat-option value="Education">Education</mat-option>
+                <mat-option value="Retail">Retail</mat-option>
+                <mat-option value="Manufacturing">Manufacturing</mat-option>
+                <mat-option value="Other">Other</mat-option>
+              </mat-select>
+              <mat-error *ngIf="companyForm.get('industry')?.hasError('required')">
+                Industry is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field class="form-field" appearance="outline">
+              <mat-label>Email</mat-label>
+              <input matInput type="email" formControlName="email" placeholder="Enter email">
+              <mat-error *ngIf="companyForm.get('email')?.hasError('required')">
+                Email is required
+              </mat-error>
+              <mat-error *ngIf="companyForm.get('email')?.hasError('email')">
+                Invalid email format
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="form-field" appearance="outline">
+              <mat-label>Phone</mat-label>
+              <input matInput formControlName="phone" placeholder="Enter phone number">
+              <mat-error *ngIf="companyForm.get('phone')?.hasError('required')">
+                Phone is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field class="form-field-full" appearance="outline">
+              <mat-label>Address</mat-label>
+              <textarea matInput formControlName="address" placeholder="Enter address" rows="3"></textarea>
+              <mat-error *ngIf="companyForm.get('address')?.hasError('required')">
+                Address is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field class="form-field" appearance="outline">
+              <mat-label>Employee Count</mat-label>
+              <input matInput type="number" formControlName="employeeCount" placeholder="Enter employee count">
+              <mat-error *ngIf="companyForm.get('employeeCount')?.hasError('required')">
+                Employee count is required
+              </mat-error>
+              <mat-error *ngIf="companyForm.get('employeeCount')?.hasError('min')">
+                Must be at least 1
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="form-field" appearance="outline">
+              <mat-label>Status</mat-label>
+              <mat-select formControlName="status">
+                <mat-option value="active">Active</mat-option>
+                <mat-option value="inactive">Inactive</mat-option>
+              </mat-select>
+              <mat-error *ngIf="companyForm.get('status')?.hasError('required')">
+                Status is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Edit Mode Toggle (only for existing companies with edit permission and not pending approval) -->
+          <div class="toggle-edit" *ngIf="!isNewCompany && canToggleEditMode">
+            <button mat-raised-button type="button" color="accent" (click)="toggleEditMode()">
+              <mat-icon>{{ isEditMode ? 'visibility' : 'edit' }}</mat-icon>
+              {{ isEditMode ? 'View Mode' : 'Edit Mode' }}
+            </button>
+          </div>
+
+          <!-- Message when entity is pending approval -->
+          <div class="pending-message" *ngIf="!isNewCompany && company?.approvalStatus === 'pending'">
+            <mat-icon>info</mat-icon>
+            <span>This company is pending approval. Edit mode is disabled.</span>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </mat-sidenav-content>
+
+  <!-- History Drawer -->
+  <mat-sidenav #historyDrawer position="end" mode="side" [(opened)]="historyDrawerOpened" class="history-sidenav">
+    <app-history-drawer [history]="history"></app-history-drawer>
+  </mat-sidenav>
+</mat-sidenav-container>

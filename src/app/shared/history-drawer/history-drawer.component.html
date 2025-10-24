@@ -1,0 +1,100 @@
+<div class="history-drawer">
+  <h3 class="history-title">
+    <mat-icon>history</mat-icon>
+    Change History
+  </h3>
+
+  <mat-divider></mat-divider>
+
+  <div class="history-content">
+    @if (history.length > 0) {
+      <div class="timeline">
+        @for (entry of history; track entry.id) {
+          <div class="timeline-item">
+            <div class="timeline-marker">
+              <div class="timeline-icon" [class]="getActionColor(entry.action)">
+                <mat-icon>{{ getActionIcon(entry.action) }}</mat-icon>
+              </div>
+              <div class="timeline-line"></div>
+            </div>
+
+            <div class="timeline-content">
+              <mat-card class="change-card">
+                <mat-card-header>
+                  <div class="card-header-content">
+                    <div class="action-info">
+                      <mat-chip [color]="getActionColor(entry.action)" highlighted>
+                        {{ entry.action | titlecase }}
+                      </mat-chip>
+                      <mat-chip [class]="getStatusClass(entry.status)">
+                        {{ entry.status | titlecase }}
+                      </mat-chip>
+                    </div>
+                    <div class="time-info">
+                      <mat-icon>access_time</mat-icon>
+                      <span>{{ entry.created_at | date:'MMM d, y, h:mm a' }}</span>
+                    </div>
+                  </div>
+                </mat-card-header>
+
+                <mat-card-content>
+                  <div class="change-summary">
+                    <p>{{ getChangeSummary(entry) }}</p>
+                  </div>
+
+                  @if (getChangedFields(entry).length > 0) {
+                    <div class="changed-fields">
+                      <h4>Changed Fields:</h4>
+                      @for (field of getChangedFields(entry); track field.field) {
+                        <div class="field-change">
+                          <span class="field-name">{{ field.field }}:</span>
+                          @if (entry.action === 'update') {
+                            <span class="old-value">{{ field.oldValue }}</span>
+                            <mat-icon class="arrow-icon">arrow_forward</mat-icon>
+                          }
+                          <span class="new-value">{{ field.newValue }}</span>
+                        </div>
+                      }
+                    </div>
+                  }
+
+                  <div class="metadata">
+                    <div class="meta-item">
+                      <mat-icon>person</mat-icon>
+                      <span>Requested by: <strong>{{ entry.requestedBy }}</strong></span>
+                    </div>
+                    @if (entry.status === 'approved' && entry.reviewedBy) {
+                      <div class="meta-item">
+                        <mat-icon>check_circle</mat-icon>
+                        <span>Approved by: <strong>{{ entry.reviewedBy }}</strong></span>
+                        <span class="meta-time">on {{ entry.reviewed_at | date:'MMM d, y, h:mm a' }}</span>
+                      </div>
+                    }
+                    @if (entry.status === 'rejected' && entry.reviewedBy) {
+                      <div class="meta-item">
+                        <mat-icon>cancel</mat-icon>
+                        <span>Rejected by: <strong>{{ entry.reviewedBy }}</strong></span>
+                        <span class="meta-time">on {{ entry.reviewed_at | date:'MMM d, y, h:mm a' }}</span>
+                      </div>
+                      @if (entry.rejectionReason) {
+                        <div class="rejection-reason">
+                          <mat-icon>info</mat-icon>
+                          <span>Reason: {{ entry.rejectionReason }}</span>
+                        </div>
+                      }
+                    }
+                  </div>
+                </mat-card-content>
+              </mat-card>
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="no-history">
+        <mat-icon>info</mat-icon>
+        <p>No history available</p>
+      </div>
+    }
+  </div>
+</div>

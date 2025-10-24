@@ -8,8 +8,13 @@
 
 # Node
 /node_modules
+backend/node_modules
 npm-debug.log
 yarn-error.log
+
+# Database
+backend/database.sqlite
+backend/*.sqlite
 
 # IDEs and editors
 .idea/
