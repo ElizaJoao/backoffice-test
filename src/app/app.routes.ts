@@ -4,6 +4,8 @@ import { UserListComponent } from './features/users/user-list/user-list.componen
 import { UserDetailComponent } from './features/users/user-detail/user-detail.component';
 import { CompanyListComponent } from './features/companies/company-list/company-list.component';
 import { CompanyDetailComponent } from './features/companies/company-detail/company-detail.component';
+import { CountryListComponent } from './features/countries/country-list/country-list.component';
+import { CountryDetailComponent } from './features/countries/country-detail/country-detail.component';
 import { ApprovalListComponent } from './features/approvals/approval-list/approval-list.component';
 import { LoginComponent } from './features/auth/login/login.component';
 import { RegisterComponent } from './features/auth/register/register.component';
@@ -23,6 +25,8 @@ export const routes: Routes = [
   { path: 'users/:id', component: UserDetailComponent, canActivate: [authGuard] },
   { path: 'companies', component: CompanyListComponent, canActivate: [authGuard] },
   { path: 'companies/:id', component: CompanyDetailComponent, canActivate: [authGuard] },
+  { path: 'countries', component: CountryListComponent, canActivate: [authGuard] },
+  { path: 'countries/:id', component: CountryDetailComponent, canActivate: [authGuard] },
   { path: 'approvals', component: ApprovalListComponent, canActivate: [authGuard] },
 
   // Wildcard route
