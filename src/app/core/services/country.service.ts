@@ -32,7 +32,7 @@ export class CountryService {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
 
-  getCountryHistory(id: number): Observable<any[]> {
+  getHistory(id: number): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/${id}/history`);
   }
 }
