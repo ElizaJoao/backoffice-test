@@ -8,7 +8,7 @@ const PendingChange = sequelize.define('PendingChange', {
     autoIncrement: true
   },
   entityType: {
-    type: DataTypes.ENUM('user', 'company'),
+    type: DataTypes.ENUM('user', 'company', 'country', 'employee'),
     allowNull: false,
     field: 'entity_type'
   },
