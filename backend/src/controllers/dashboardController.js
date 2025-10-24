@@ -1,6 +1,4 @@
-const { User } = require('../models/User');
-const { Company } = require('../models/Company');
-const { Approval } = require('../models/Approval');
+const { User, Company, PendingChange } = require('../models');
 const { Op } = require('sequelize');
 
 exports.getStatistics = async (req, res) => {
@@ -8,7 +6,7 @@ exports.getStatistics = async (req, res) => {
     // Get total counts
     const totalUsers = await User.count();
     const totalCompanies = await Company.count();
-    const pendingApprovals = await Approval.count({
+    const pendingApprovals = await PendingChange.count({
       where: { status: 'pending' }
     });
 
@@ -35,10 +33,10 @@ exports.getStatistics = async (req, res) => {
     }));
 
     // Get approvals by status
-    const approvalsByStatus = await Approval.findAll({
+    const approvalsByStatus = await PendingChange.findAll({
       attributes: [
         'status',
-        [Approval.sequelize.fn('COUNT', Approval.sequelize.col('id')), 'count']
+        [PendingChange.sequelize.fn('COUNT', PendingChange.sequelize.col('id')), 'count']
       ],
       group: ['status']
     });
@@ -52,18 +50,18 @@ exports.getStatistics = async (req, res) => {
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
-    const recentApprovals = await Approval.findAll({
+    const recentApprovals = await PendingChange.findAll({
       where: {
         createdAt: {
           [Op.gte]: sevenDaysAgo
         }
       },
       attributes: [
-        [Approval.sequelize.fn('DATE', Approval.sequelize.col('createdAt')), 'date'],
-        [Approval.sequelize.fn('COUNT', Approval.sequelize.col('id')), 'count']
+        [PendingChange.sequelize.fn('DATE', PendingChange.sequelize.col('createdAt')), 'date'],
+        [PendingChange.sequelize.fn('COUNT', PendingChange.sequelize.col('id')), 'count']
       ],
-      group: [Approval.sequelize.fn('DATE', Approval.sequelize.col('createdAt'))],
-      order: [[Approval.sequelize.fn('DATE', Approval.sequelize.col('createdAt')), 'ASC']]
+      group: [PendingChange.sequelize.fn('DATE', PendingChange.sequelize.col('createdAt'))],
+      order: [[PendingChange.sequelize.fn('DATE', PendingChange.sequelize.col('createdAt')), 'ASC']]
     });
 
     // Fill in missing dates with 0 count
